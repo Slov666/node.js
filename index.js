@@ -11,7 +11,7 @@ const argv = yargs
 function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
-      console.log(contacts.listContacts());
+      contacts.listContacts().then(console.table);
       break;
 
     case "get":

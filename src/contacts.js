@@ -6,21 +6,17 @@ const contactsPath = path.join(__dirname, "./db/contacts.json");
 
 async function listContacts() {
   const data = await fsPromises.readFile(contactsPath, "utf-8");
-  console.log(data);
+  return JSON.parse(data);
 }
-// console.log(listContacts());
 
 async function getContactById(contactId) {
-  const data = await fsPromises.readFile(contactsPath, "utf-8");
-  const parsedData = JSON.parse(data);
-  const contactByID = parsedData.filter((contact) => contact.id === contactId);
+  const parsedData = await listContacts();
+  const contactByID = parsedData.find((contact) => contact.id === contactId);
   console.log(contactByID);
 }
-// console.log(getContactById(5));
 
 async function removeContact(contactId) {
-  const data = await fsPromises.readFile(contactsPath, "utf-8");
-  const parsedData = JSON.parse(data);
+  const parsedData = await listContacts();
   const delContactByID = parsedData.filter(
     (contact) => contact.id !== contactId
   );
@@ -29,12 +25,15 @@ async function removeContact(contactId) {
     if (err) console.log(err);
   });
 }
-
+// removeContact()
 async function addContact(name, email, phone) {
-  const data = await fsPromises.readFile(contactsPath, "utf-8");
-  const parsedData = JSON.parse(data);
+  const parsedData = await listContacts();
+  let maxID = 0;
+  parsedData.map((item) => {
+    if (item.id > maxID) maxID = item.id;
+  });
   const creacteContact = {
-    id: parsedData.length + 1,
+    id: maxID + 1,
     name: name,
     email: email,
     phone: phone,
