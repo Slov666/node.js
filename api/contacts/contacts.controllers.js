@@ -1,4 +1,4 @@
-const Contacts = require("./model.contacts");
+const Contacts = require("./contacts.model");
 
 async function getContacts(req, res) {
   const contactsToSend = await Contacts.find({});
@@ -15,11 +15,11 @@ async function getContactByID(req, res) {
 
 async function createContact(req, res) {
   const contactToCheck = await Contacts.findOne({ ...req.body });
-  if (contactToCheck)
+  if (contactToCheck) {
     return res
-      .status(404)
+      .status(409)
       .json({ message: "a user with this email is already exists" });
-
+  }
   const newContact = await Contacts.create({ ...req.body });
   res.status(201).json(newContact);
 }
@@ -32,7 +32,6 @@ async function createContact(req, res) {
 //     next(error);
 //   }
 // }
-
 
 async function deleteContact(req, res) {
   const id = req.params.contactId;

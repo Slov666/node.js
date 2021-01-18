@@ -4,17 +4,17 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 
 require("dotenv").config();
-const contactsRouter = require("./contacts/routes.contacts");
-const url = process.env.MONGO_URL
-  
+const contactsRouter = require("./contacts/contacts.routes");
+const url = process.env.MONGO_URL;
+
 module.exports = class Server {
   constructor() {
     this.server = null;
   }
 
-  start() {
+  async start() {
     this.initServer();
-    this.initDB();
+    await this.initDB();
     this.initMiddlewares();
     this.initRoutes();
     this.startListening();

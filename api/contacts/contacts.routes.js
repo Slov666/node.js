@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { asyncWrapper } = require("../helpers");
+const { asyncWrapper } = require("../helpers/helpers");
 const {
   addContactValidation,
   updateContactValidation,
@@ -12,7 +12,7 @@ const {
   createContact,
   deleteContact,
   updateContact,
-} = require("./controllers.contacts");
+} = require("./contacts.controllers");
 
 contactsRouter.get("/", asyncWrapper(getContacts));
 contactsRouter.get("/:contactId", asyncWrapper(getContactByID));
