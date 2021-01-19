@@ -17,7 +17,6 @@ const contactsSchema = new mongoose.Schema({
   },
   subsctiption: {
     type: String,
-    required: true,
   },
   password: {
     type: String,

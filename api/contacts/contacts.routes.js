@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { asyncWrapper } = require("../helpers/helpers");
+const { asyncWrapper } = require("../helpers/asyncWrapper");
 const {
   addContactValidation,
   updateContactValidation,

@@ -14,7 +14,7 @@ async function getContactByID(req, res) {
 }
 
 async function createContact(req, res) {
-  const contactToCheck = await Contacts.findOne({ ...req.body });
+  const contactToCheck = await Contacts.findOne({ email: req.body.email });
   if (contactToCheck) {
     return res
       .status(409)
@@ -23,15 +23,6 @@ async function createContact(req, res) {
   const newContact = await Contacts.create({ ...req.body });
   res.status(201).json(newContact);
 }
-
-// async function createContact(req, res, next) {
-//   try {
-//     const contact = await Contacts.create({ ...req.body });
-//     return res.status(201).send(contact);
-//   } catch (error) {
-//     next(error);
-//   }
-// }
 
 async function deleteContact(req, res) {
   const id = req.params.contactId;
