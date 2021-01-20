@@ -6,9 +6,7 @@ module.exports.addContactValidation = (req, res, next) => {
     email: joi.string().email().required(),
     phone: joi.string().required(),
     subsctiption: joi.string(),
-    password: joi
-      .string()
-      .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+    password: joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
     token: joi.string(),
   });
   const value = schema.validate(req.body);
@@ -23,11 +21,8 @@ module.exports.updateContactValidation = (req, res, next) => {
     name: joi.string(),
     email: joi.string().email(),
     phone: joi.string(),
-    subsctiption: joi.string().required(),
-    password: joi
-      .string()
-      .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
-      .required(),
+    subsctiption: joi.string(),
+    password: joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
   });
   const value = schema.validate(req.body);
   if (value.error) {
