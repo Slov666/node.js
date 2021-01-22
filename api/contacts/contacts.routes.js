@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { asyncWrapper } = require("../helpers/asyncWrapper");
 const {
   addContactValidation,
   updateContactValidation,
@@ -13,10 +14,14 @@ const {
   updateContact,
 } = require("./contacts.controllers");
 
-contactsRouter.get("/", getContacts);
-contactsRouter.get("/:contactId", getContactByID);
-contactsRouter.post("/", addContactValidation, createContact);
-contactsRouter.delete("/:contactId", deleteContact);
-contactsRouter.patch("/:contactId", updateContactValidation, updateContact);
+contactsRouter.get("/", asyncWrapper(getContacts));
+contactsRouter.get("/:contactId", asyncWrapper(getContactByID));
+contactsRouter.post("/", addContactValidation, asyncWrapper(createContact));
+contactsRouter.delete("/:contactId", asyncWrapper(deleteContact));
+contactsRouter.patch(
+  "/:contactId",
+  updateContactValidation,
+  asyncWrapper(updateContact)
+);
 
 module.exports = contactsRouter;
