@@ -1,5 +1,5 @@
-const { string } = require("joi");
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const contactsSchema = new mongoose.Schema({
   name: {
@@ -15,15 +15,15 @@ const contactsSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  subsctiption: {
+  subscription: {
     type: String,
+    enum: ["free", "pro", "premium"],
+    default: "free",
   },
   password: {
     type: String,
     required: true,
   },
-  token: {
-    type: String,
-  },
 });
+contactsSchema.plugin(mongoosePaginate);
 module.exports = Contacts = mongoose.model("contacts", contactsSchema);

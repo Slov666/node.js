@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 
 require("dotenv").config();
 const contactsRouter = require("./contacts/contacts.routes");
+const authRouter = require("./auth/auth.routes");
+const userRouter = require("./users/users.routers");
 const url = process.env.MONGO_URL;
 
 module.exports = class Server {
@@ -46,7 +48,9 @@ module.exports = class Server {
   }
 
   initRoutes() {
+    this.server.use("/api/auth", authRouter);
     this.server.use("/api/contacts", contactsRouter);
+    this.server.use("/api/user", userRouter);
   }
 
   startListening() {
