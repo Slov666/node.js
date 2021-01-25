@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const UsersModel = require("../users/users.model");
 require("dotenv").config();
@@ -10,7 +9,9 @@ module.exports.registration = async (req, res) => {
       .status(409)
       .json({ message: "a user with this email is already exists" });
   }
-  const passwordHashed = await bcrypt.hash(req.body.password, 10);
+
+  const passwordHashed = await UsersModel.hashedPassword(req.body.password);
+
   await UsersModel.create({
     email: req.body.email,
     password: passwordHashed,
@@ -27,16 +28,12 @@ module.exports.login = async (req, res) => {
       .status(401)
       .json({ message: `No user with email ${req.body.email} found` });
   }
-  if (!(await bcrypt.compare(req.body.password, userToCheck.password))) {
+  if (!UsersModel.compare(req.body.password, userToCheck.password)) {
     return res.status(401).json({ message: `Incorrect passwod` });
   }
-  const token = jwt.sign(
-    {
-      _id: userToCheck._id,
-      email: userToCheck.email,
-    },
-    process.env.JWT_SECRET
-  );
+
+  const token = await UsersModel.sign(userToCheck._id, userToCheck.email);
+
   res.status(200).json({
     token: token,
     user: {
@@ -50,5 +47,5 @@ module.exports.logout = async (req, res) => {
   const user = await UsersModel.findById(req.user._id);
   if (!user) return res.status(401).json({ message: "Not authorized" });
   user.token = null;
-  res.status(204).send()
+  res.status(204).send();
 };

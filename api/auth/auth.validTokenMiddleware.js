@@ -14,17 +14,11 @@ module.exports = async (req, res, next) => {
     return res.status(401).json({ message: "can not find a token in header" });
   }
 
-  const userTocheck = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    (err, decoded) => {
-      if (err) {
-        return res.status(400).json({ message: "invalid token" });
-      }
-      return decoded;
-    }
-  );
-  const user = await UsersModel.findById(userTocheck._id);
+  const userToCheck = await UsersModel.verify(token);
+  if (userToCheck.err) {
+    return res.status(400).json({ message: "invalid token" });
+  }
+  const user = await UsersModel.findById(userToCheck._id);
   if (!user) return res.status(401).json({ message: "Not authorized" });
   user.token = token;
   req.user = user;

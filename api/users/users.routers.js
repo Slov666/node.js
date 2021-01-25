@@ -9,6 +9,6 @@ const userRouter = Router();
 
 userRouter.use(authValidateToken);
 userRouter.get("/current", asyncWrapper(getUser));
-userRouter.patch("/current", updateMiddleware, asyncWrapper(updateUser));
+userRouter.patch("/", updateMiddleware, asyncWrapper(updateUser));
 
 module.exports = userRouter;
