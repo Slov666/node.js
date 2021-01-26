@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
     return res.status(401).json({ message: "can not find a token in header" });
   }
 
-  const userToCheck = await UsersModel.verify(token);
+  const userToCheck = await UsersModel.verifyToken(token);
   if (userToCheck.err) {
     return res.status(400).json({ message: "invalid token" });
   }

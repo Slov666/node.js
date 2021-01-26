@@ -20,28 +20,26 @@ const usersSchema = new mongoose.Schema({
   token: { type: String, default: "" },
 });
 
-const UsersModel = mongoose.model("users", usersSchema);
-
-UsersModel.hashedPassword = async (password) => {
+usersSchema.statics.hashedPassword = async (password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   return hashedPassword;
 };
-
-UsersModel.compare = async (reqPassword, hashedPassword) => {
-  const compare = await bcrypt.compare(reqPassword, hashedPassword);
-  return compare;
+usersSchema.methods.compare = async (reqPassword) => {
+  const bcryptCompare = await bcrypt.compare(reqPassword, this.password);
+  return bcryptCompare;
 };
-UsersModel.sign = async (id, email) => {
+
+usersSchema.methods.sign = async () => {
   const token = jwt.sign(
     {
-      _id: id,
-      email: email,
+      _id: this._id,
+      email: this.email,
     },
     process.env.JWT_SECRET
   );
   return token;
 };
-UsersModel.verify = async (token) => {
+usersSchema.statics.verifyToken = async (token) => {
   const userToCheck = jwt.verify(
     token,
     process.env.JWT_SECRET,
@@ -53,4 +51,5 @@ UsersModel.verify = async (token) => {
   return userToCheck;
 };
 
+const UsersModel = mongoose.model("users", usersSchema);
 module.exports = UsersModel;

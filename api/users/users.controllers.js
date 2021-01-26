@@ -1,6 +1,3 @@
-require("dotenv").config();
-// const UsersModel = require("./users.model");
-
 module.exports.getUser = async (req, res) => {
   res.status(200).json({
     user: {

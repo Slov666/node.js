@@ -28,11 +28,11 @@ module.exports.login = async (req, res) => {
       .status(401)
       .json({ message: `No user with email ${req.body.email} found` });
   }
-  if (!UsersModel.compare(req.body.password, userToCheck.password)) {
+  if (!userToCheck.compare(req.body.password)) {
     return res.status(401).json({ message: `Incorrect passwod` });
   }
 
-  const token = await UsersModel.sign(userToCheck._id, userToCheck.email);
+  const token = await userToCheck.sign();
 
   res.status(200).json({
     token: token,
