@@ -51,5 +51,5 @@ usersSchema.statics.verifyToken = async (token) => {
   return userToCheck;
 };
 
-const UsersModel = mongoose.model("users", usersSchema);
+const UsersModel = mongoose.model("User", usersSchema);
 module.exports = UsersModel;
