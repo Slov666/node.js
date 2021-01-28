@@ -1,10 +1,22 @@
 const Contacts = require("./contacts.model");
 
 async function getContacts(req, res) {
-  const contactsToSend = await Contacts.find({});
-  if (!contactsToSend) return res.status(400).json({ message: "Not found" });
-  res.status(200).json(contactsToSend);
+  const { page = 1, limit = 5, sub } = req.query;
+  const pagitnateOptions = {
+    page,
+    limit,
+  };
+  const queryOptions = sub ? { subscription: sub } : {};
+  const contactsToSend = await Contacts.paginate(
+    queryOptions,
+    pagitnateOptions
+  );
+
+  if (!contactsToSend.docs.length)
+    return res.status(400).json({ message: "Not found" });
+  res.status(200).json(contactsToSend.docs);
 }
+
 async function getContactByID(req, res) {
   const contactToSend = await Contacts.findById(req.params.contactId);
   if (!contactToSend) {
@@ -20,6 +32,7 @@ async function createContact(req, res) {
       .status(409)
       .json({ message: "a user with this email is already exists" });
   }
+
   const newContact = await Contacts.create({ ...req.body });
   res.status(201).json(newContact);
 }
