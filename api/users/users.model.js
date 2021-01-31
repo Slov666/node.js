@@ -12,6 +12,7 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  avatarUrl: { type: String,},
   subscription: {
     type: String,
     enum: ["free", "pro", "premium"],
@@ -29,7 +30,7 @@ usersSchema.methods.compare = async (reqPassword) => {
   return bcryptCompare;
 };
 
-usersSchema.methods.sign = async () => {
+usersSchema.methods.sign = async (email, id) => {
   const token = jwt.sign(
     {
       _id: this._id,

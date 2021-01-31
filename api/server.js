@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const path = require("path");
 
 require("dotenv").config();
 const contactsRouter = require("./contacts/contacts.routes");
@@ -40,8 +41,9 @@ module.exports = class Server {
   }
   initMiddlewares() {
     this.server.use(express.json());
-    this.server.use(cors({ origin: "http://localhost:300" }));
+    this.server.use(cors({ origin: "http://localhost:3000" }));
     this.server.use(morgan("dev"));
+    this.server.use(express.static("public"));
     this.server.use((err, req, res, next) => {
       res.status(500).json({ message: err.message });
     });
