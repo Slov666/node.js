@@ -17,5 +17,7 @@ module.exports.updateUser = async (req, res) => {
 module.exports.updateAvatar = async (req, res) => {
   req.user.avatarUrl = `http://localhost:${process.env.PORT}/images/${req.file.filename}`;
   await req.user.save();
-  res.status(200).json({ message: "avatar modified" });
+  res
+    .status(200)
+    .json({ message: "avatar modified", newAvatar: req.user.avatarUrl });
 };
