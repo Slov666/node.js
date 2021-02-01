@@ -12,6 +12,7 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  avatarUrl: { type: String },
   subscription: {
     type: String,
     enum: ["free", "pro", "premium"],
@@ -19,17 +20,20 @@ const usersSchema = new mongoose.Schema({
   },
   token: { type: String, default: "" },
 });
-
-usersSchema.statics.hashedPassword = async (password) => {
+usersSchema.methods.compare = compare;
+usersSchema.statics.hashedPassword = hashedPassword;
+usersSchema.methods.sign = sign;
+usersSchema.statics.verifyToken = verifyToken;
+async function hashedPassword(password) {
   const hashedPassword = await bcrypt.hash(password, 10);
   return hashedPassword;
-};
-usersSchema.methods.compare = async (reqPassword) => {
+}
+async function compare(reqPassword) {
   const bcryptCompare = await bcrypt.compare(reqPassword, this.password);
   return bcryptCompare;
-};
+}
 
-usersSchema.methods.sign = async () => {
+async function sign() {
   const token = jwt.sign(
     {
       _id: this._id,
@@ -37,9 +41,11 @@ usersSchema.methods.sign = async () => {
     },
     process.env.JWT_SECRET
   );
+  this.token = token;
+  this.save();
   return token;
-};
-usersSchema.statics.verifyToken = async (token) => {
+}
+async function verifyToken(token) {
   const userToCheck = jwt.verify(
     token,
     process.env.JWT_SECRET,
@@ -49,7 +55,7 @@ usersSchema.statics.verifyToken = async (token) => {
     }
   );
   return userToCheck;
-};
+}
 
 const UsersModel = mongoose.model("User", usersSchema);
 module.exports = UsersModel;
