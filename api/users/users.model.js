@@ -21,6 +21,7 @@ const usersSchema = new mongoose.Schema({
   },
   token: { type: String, default: "" },
 });
+
 usersSchema.methods.compare = compare;
 usersSchema.statics.hashedPassword = hashedPassword;
 usersSchema.methods.sign = sign;

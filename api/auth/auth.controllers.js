@@ -55,6 +55,7 @@ module.exports.logout = async (req, res) => {
   const user = await UsersModel.findById(req.user._id);
   if (!user) return res.status(401).json({ message: "Not authorized" });
   user.token = null;
+  user.save();
   res.status(204).send();
 };
 
