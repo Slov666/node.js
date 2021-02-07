@@ -13,6 +13,7 @@ const usersSchema = new mongoose.Schema({
     required: true,
   },
   avatarUrl: { type: String },
+  verificationToken: { type: String },
   subscription: {
     type: String,
     enum: ["free", "pro", "premium"],
@@ -20,10 +21,15 @@ const usersSchema = new mongoose.Schema({
   },
   token: { type: String, default: "" },
 });
+
 usersSchema.methods.compare = compare;
 usersSchema.statics.hashedPassword = hashedPassword;
 usersSchema.methods.sign = sign;
 usersSchema.statics.verifyToken = verifyToken;
+usersSchema.methods.createVerificationToken = createVerificationToken;
+usersSchema.statics.findByVerificationToken = findByVerificationToken;
+usersSchema.methods.removeVerificationToken = removeVerificationToken;
+
 async function hashedPassword(password) {
   const hashedPassword = await bcrypt.hash(password, 10);
   return hashedPassword;
@@ -55,6 +61,18 @@ async function verifyToken(token) {
     }
   );
   return userToCheck;
+}
+async function createVerificationToken(verificationToken) {
+  this.verificationToken = verificationToken;
+  this.save();
+}
+async function findByVerificationToken(verificationToken) {
+  return this.findOne({ verificationToken });
+}
+async function removeVerificationToken() {
+  return UsersModel.findByIdAndUpdate(this._id, {
+    verificationToken: null,
+  });
 }
 
 const UsersModel = mongoose.model("User", usersSchema);
